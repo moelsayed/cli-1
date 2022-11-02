@@ -32,8 +32,10 @@ metadata:
 spec:
   target: remote
   channel: {{.Channel}}
+{{- if .Data}}
   data:
 {{.Data | indent 4}}
+{{ end }}
   descriptor:
 {{yaml .Descriptor | printf "%s" | indent 4}}
 `
@@ -60,7 +62,6 @@ func Template(archive *ctf.ComponentArchive, channel string, data []byte) ([]byt
 		Channel:    channel,
 		Data:       string(data),
 	}
-
 	t, err := template.New("modTemplate").Funcs(template.FuncMap{"yaml": yaml.Marshal, "indent": Indent}).Parse(modTemplate)
 	if err != nil {
 		return nil, err
